@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppLocker to Fleet CSP Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 AppLocker to Fleet CSP Converter</h1>
+            <p class="subtitle">Convert your AppLocker XML policies to Fleet-compatible MDM format</p>
+        </header>
+
+        <div class="steps-info">
+            <h2>Quick Guide</h2>
+            <ol>
+                <li>Create your AppLocker policy in Windows using the Local Security Policy or Group Policy Management Console</li>
+                <li>Export the policy to XML format</li>
+                <li>Upload or paste the XML file below</li>
+                <li>Select which rule types to convert (EXE, MSI, Script, DLL, StoreApps)</li>
+                <li>Download the Fleet-compatible SyncML file</li>
+            </ol>
+        </div>
+
+        <div class="converter-section">
+            <div class="input-section">
+                <h2>Step 1: Input AppLocker XML</h2>
+                <div class="input-options">
+                    <label class="file-upload">
+                        <input type="file" id="fileInput" accept=".xml" />
+                        <span class="upload-button">📁 Upload XML File</span>
+                    </label>
+                    <span class="divider">or</span>
+                    <button id="pasteBtn" class="paste-button">📋 Paste XML</button>
+                </div>
+                <textarea id="xmlInput" placeholder="Paste your AppLocker XML here, or upload a file above..."></textarea>
+            </div>
+
+            <div class="options-section">
+                <h2>Step 2: Select Rule Types</h2>
+                <p class="help-text">Select which rule collections you want to include in the Fleet policy:</p>
+                <div class="rule-checkboxes">
+                    <label><input type="checkbox" id="exe" checked> EXE (Executables)</label>
+                    <label><input type="checkbox" id="msi"> MSI (Windows Installer)</label>
+                    <label><input type="checkbox" id="script"> Script</label>
+                    <label><input type="checkbox" id="dll"> DLL</label>
+                    <label><input type="checkbox" id="storeapps"> StoreApps</label>
+                </div>
+                <div class="grouping-section">
+                    <label for="grouping">Grouping ID:</label>
+                    <input type="text" id="grouping" value="FleetAppLocker" placeholder="FleetAppLocker">
+                    <span class="help-text-small">Unique identifier for this policy (recommended: use a GUID)</span>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <button id="convertBtn" class="convert-button" disabled>🔄 Convert to Fleet Format</button>
+                <button id="downloadBtn" class="download-button" disabled>💾 Download SyncML File</button>
+            </div>
+
+            <div class="output-section" id="outputSection" style="display: none;">
+                <h2>Step 3: Preview Output</h2>
+                <div class="output-controls">
+                    <button id="copyBtn" class="copy-button">📋 Copy to Clipboard</button>
+                    <button id="clearBtn" class="clear-button">🗑️ Clear</button>
+                </div>
+                <pre id="output"><code></code></pre>
+            </div>
+
+            <div class="error-section" id="errorSection" style="display: none;">
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Made for Windows admins deploying AppLocker policies via Fleet MDM</p>
+            <p class="docs-link">
+                <a href="https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp" target="_blank">
+                    📚 Microsoft AppLocker CSP Documentation
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
