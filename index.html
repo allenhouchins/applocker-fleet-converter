@@ -3,25 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AppLocker to Fleet CSP Converter</title>
+    <title>AppLocker to Fleet configuration profile converter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔒 AppLocker to Fleet CSP Converter</h1>
+            <h1>🔒 AppLocker to Fleet configuration profile converter</h1>
             <p class="subtitle">Convert your AppLocker XML policies to Fleet-compatible MDM format</p>
         </header>
 
         <div class="steps-info">
-            <h2>Quick Guide</h2>
-            <ol>
-                <li>Create your AppLocker policy in Windows using the Local Security Policy or Group Policy Management Console</li>
-                <li>Export the policy to XML format</li>
-                <li>Upload or paste the XML file below</li>
-                <li>Select which rule types to convert (EXE, MSI, Script, DLL, StoreApps)</li>
-                <li>Download the Fleet-compatible SyncML file</li>
-            </ol>
+            <h2>How to Create and Export Your AppLocker Policy</h2>
+            <div class="instructions">
+                <h3>Step 1: Open AppLocker Management</h3>
+                <p>You can use either:</p>
+                <ul>
+                    <li><strong>Local Security Policy</strong> (for local policies): Press <code>Win + R</code>, type <code>secpol.msc</code> and press Enter</li>
+                    <li><strong>Group Policy Management Console</strong> (for domain policies): Open from Administrative Tools</li>
+                </ul>
+
+                <h3>Step 2: Navigate to AppLocker</h3>
+                <p>In the left pane, navigate to: <strong>Application Control Policies → AppLocker</strong></p>
+
+                <h3>Step 3: Create Your Rules</h3>
+                <p>Right-click on any of the following rule types and select <strong>Create New Rule</strong>:</p>
+                <ul>
+                    <li><strong>Executable Rules</strong> (EXE files)</li>
+                    <li><strong>Windows Installer Rules</strong> (MSI files)</li>
+                    <li><strong>Script Rules</strong> (PowerShell, VBScript, etc.)</li>
+                    <li><strong>DLL Rules</strong> (Dynamic Link Libraries)</li>
+                    <li><strong>Packaged app Rules</strong> (StoreApps)</li>
+                </ul>
+                <p>Follow the wizard to create your rules. Remember: when creating allow lists, you must explicitly allow system apps like Settings, Start, Email, etc., as all inbox apps are blocked by default.</p>
+
+                <h3>Step 4: Export the Policy</h3>
+                <p>Right-click on <strong>AppLocker</strong> in the left pane and select <strong>Export Policy...</strong>. Choose a location and save as XML (e.g., <code>applocker-policy.xml</code>).</p>
+
+                <h3>Step 5: Convert Using This Tool</h3>
+                <p>Upload or paste your exported XML file below. The tool will automatically detect which rule types are available in your policy and enable/disable the appropriate options.</p>
+                
+                <h3>What Users Will See</h3>
+                <p>When an AppLocker policy blocks an application, end users will see a Windows dialog box indicating that the app has been blocked by their system administrator:</p>
+                <div class="screenshot-container">
+                    <img src="applocker-blocked-dialog.png" alt="AppLocker blocked dialog shown to end users" class="screenshot">
+                    <p class="screenshot-caption">Example of the dialog shown to users when an application is blocked by AppLocker</p>
+                </div>
+                
+                <div class="important-note">
+                    <strong>⚠️ Important:</strong> Always test AppLocker policies on a small group of devices before deploying organization-wide. Some policy changes may require a device reboot.
+                </div>
+            </div>
         </div>
 
         <div class="converter-section">
@@ -51,7 +83,7 @@
                 <div class="grouping-section">
                     <label for="grouping">Grouping ID:</label>
                     <input type="text" id="grouping" value="FleetAppLocker" placeholder="FleetAppLocker">
-                    <span class="help-text-small">Unique identifier for this policy (recommended: use a GUID)</span>
+                    <span class="help-text-small">Unique identifier for this policy. Microsoft recommends using a GUID to avoid conflicts. Generate one in PowerShell: <code>[guid]::NewGuid()</code></span>
                 </div>
             </div>
 

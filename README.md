@@ -1,4 +1,4 @@
-# AppLocker to Fleet CSP Converter
+# AppLocker to Fleet configuration profile converter
 
 A web-based tool that converts AppLocker XML policy exports into Fleet-compatible MDM (Mobile Device Management) format for easy deployment.
 
@@ -65,6 +65,14 @@ This tool helps Windows administrators (and Mac admins managing Windows devices)
    - Assign the policy to your target devices or groups
    - The policy will be applied via the AppLocker CSP
 
+### End User Experience
+
+When an AppLocker policy is active and blocks an application, end users will see a Windows dialog box indicating that the app has been blocked:
+
+![AppLocker Blocked Dialog](applocker-blocked-dialog.png)
+
+*Example of the dialog shown to users when an application is blocked by AppLocker*
+
 ## 📖 Understanding the Conversion
 
 ### What Gets Converted?
@@ -92,6 +100,18 @@ The Grouping ID is a unique identifier for your policy. While you can use any st
 ```
 
 **Or use an online GUID generator**
+
+## 👤 End User Experience
+
+When an AppLocker policy blocks an application, end users will see a Windows dialog box with the message:
+
+> **"This app has been blocked by your system administrator."**
+
+The dialog also includes a "Copy to clipboard" option for users to share the error message with IT support if needed.
+
+![AppLocker Blocked Dialog](applocker-blocked-dialog.png)
+
+*Example of the dialog shown to users when an application is blocked by AppLocker*
 
 ## ⚠️ Important Notes
 

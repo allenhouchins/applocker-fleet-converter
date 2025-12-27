@@ -1,4 +1,4 @@
-// AppLocker to Fleet CSP Converter
+// AppLocker to Fleet configuration profile converter
 // Converts AppLocker XML exports to Fleet-compatible SyncML format
 
 class AppLockerConverter {
