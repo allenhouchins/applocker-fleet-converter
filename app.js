@@ -5,6 +5,7 @@ class AppLockerConverter {
     constructor() {
         this.xmlContent = '';
         this.convertedContent = '';
+        this.inputTimeout = null;
         this.initializeEventListeners();
     }
 
@@ -48,8 +49,13 @@ class AppLockerConverter {
 
     handleInputChange() {
         this.xmlContent = document.getElementById('xmlInput').value;
-        this.detectAndUpdateRuleTypes();
         this.updateConvertButtonState();
+        
+        // Debounce detection to avoid running on every keystroke
+        clearTimeout(this.inputTimeout);
+        this.inputTimeout = setTimeout(() => {
+            this.detectAndUpdateRuleTypes();
+        }, 300);
     }
 
     updateConvertButtonState() {
@@ -76,10 +82,19 @@ class AppLockerConverter {
                 return;
             }
 
+            // Verify this is an AppLocker policy
+            const appLockerPolicy = xmlDoc.querySelector('AppLockerPolicy');
+            if (!appLockerPolicy) {
+                // Not an AppLocker policy, reset checkboxes
+                this.resetRuleTypeCheckboxes();
+                return;
+            }
+
             // Extract available rule types
             const availableTypes = this.detectAvailableRuleTypes(xmlDoc);
             this.updateRuleTypeCheckboxes(availableTypes);
         } catch (error) {
+            console.error('Error detecting rule types:', error);
             // On error, reset checkboxes
             this.resetRuleTypeCheckboxes();
         }
@@ -93,14 +108,22 @@ class AppLockerConverter {
             const type = collection.getAttribute('Type');
             if (!type) return;
 
-            // Check if the collection has actual rules (not just empty)
+            // Check if the collection has actual rules
+            // Look for actual rule elements (FilePathRule, FilePublisherRule, FileHashRule, etc.)
+            const hasRules = collection.querySelector('FilePathRule, FilePublisherRule, FileHashRule, AppLockerPolicy') !== null;
+            
+            // Also check if it has any child elements (in case there are other rule types)
+            const hasChildElements = Array.from(collection.children).some(child => 
+                child.nodeType === Node.ELEMENT_NODE && 
+                (child.tagName.includes('Rule') || child.tagName === 'RuleCollection')
+            );
+            
             // A collection is considered available if:
-            // 1. It has child elements (rules), OR
+            // 1. It has actual rule elements, OR
             // 2. It has EnforcementMode="Enabled" (even if empty, it's configured)
-            const hasRules = collection.children.length > 0;
             const isEnabled = collection.getAttribute('EnforcementMode') === 'Enabled';
             
-            if (hasRules || isEnabled) {
+            if (hasRules || hasChildElements || isEnabled) {
                 availableTypes.add(type);
             }
         });
@@ -121,7 +144,16 @@ class AppLockerConverter {
         // Update each checkbox
         Object.entries(typeToCheckboxId).forEach(([xmlType, checkboxId]) => {
             const checkbox = document.getElementById(checkboxId);
+            if (!checkbox) {
+                console.warn(`Checkbox with id '${checkboxId}' not found`);
+                return;
+            }
+            
             const label = checkbox.closest('label');
+            if (!label) {
+                console.warn(`Label for checkbox '${checkboxId}' not found`);
+                return;
+            }
             
             if (availableTypes.has(xmlType)) {
                 // Type is available: enable checkbox and auto-select it
