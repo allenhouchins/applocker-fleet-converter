@@ -92,7 +92,10 @@ class AppLockerConverter {
 
             // Extract available rule types
             const availableTypes = this.detectAvailableRuleTypes(xmlDoc);
-            this.updateRuleTypeCheckboxes(availableTypes);
+            // Use setTimeout to ensure DOM is ready
+            setTimeout(() => {
+                this.updateRuleTypeCheckboxes(availableTypes);
+            }, 0);
         } catch (error) {
             console.error('Error detecting rule types:', error);
             // On error, reset checkboxes
@@ -108,22 +111,20 @@ class AppLockerConverter {
             const type = collection.getAttribute('Type');
             if (!type) return;
 
-            // Check if the collection has actual rules
-            // Look for actual rule elements (FilePathRule, FilePublisherRule, FileHashRule, etc.)
-            const hasRules = collection.querySelector('FilePathRule, FilePublisherRule, FileHashRule, AppLockerPolicy') !== null;
-            
-            // Also check if it has any child elements (in case there are other rule types)
-            const hasChildElements = Array.from(collection.children).some(child => 
-                child.nodeType === Node.ELEMENT_NODE && 
-                (child.tagName.includes('Rule') || child.tagName === 'RuleCollection')
-            );
+            // Check if the collection has actual rule elements
+            // Look for any child element that is a rule (FilePathRule, FilePublisherRule, FileHashRule, etc.)
+            const hasRules = Array.from(collection.children).some(child => {
+                if (child.nodeType !== Node.ELEMENT_NODE) return false;
+                const tagName = child.tagName;
+                return tagName && (tagName.includes('Rule') || tagName === 'RuleCollection');
+            });
             
             // A collection is considered available if:
             // 1. It has actual rule elements, OR
             // 2. It has EnforcementMode="Enabled" (even if empty, it's configured)
             const isEnabled = collection.getAttribute('EnforcementMode') === 'Enabled';
             
-            if (hasRules || hasChildElements || isEnabled) {
+            if (hasRules || isEnabled) {
                 availableTypes.add(type);
             }
         });
