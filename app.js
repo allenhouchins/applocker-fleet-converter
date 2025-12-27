@@ -407,16 +407,18 @@ ${itemsXML}</Replace>`;
         const guid = generateUUID();
         const groupingInput = document.getElementById('grouping');
         groupingInput.value = guid;
+        groupingInput.focus();
+        groupingInput.select();
         
         // Visual feedback
         const generateBtn = document.getElementById('generateGuidBtn');
         const originalText = generateBtn.textContent;
         generateBtn.textContent = '✅ Generated!';
-        generateBtn.style.background = '#059669';
+        generateBtn.classList.add('generated');
         
         setTimeout(() => {
             generateBtn.textContent = originalText;
-            generateBtn.style.background = '';
+            generateBtn.classList.remove('generated');
         }, 2000);
     }
 }

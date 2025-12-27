@@ -292,7 +292,7 @@ h2 {
 
 .generate-guid-button {
     padding: 10px 16px;
-    background: #6b7280;
+    background: #2563eb;
     color: white;
     border: none;
     border-radius: 6px;
@@ -304,8 +304,16 @@ h2 {
 }
 
 .generate-guid-button:hover {
-    background: #4b5563;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #1d4ed8;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+}
+
+.generate-guid-button:active {
+    transform: scale(0.98);
+}
+
+.generate-guid-button.generated {
+    background: #059669;
 }
 
 .help-text-small {
