@@ -34,6 +34,7 @@ class AppLockerConverter {
         reader.onload = (e) => {
             this.xmlContent = e.target.result;
             document.getElementById('xmlInput').value = this.xmlContent;
+            this.detectAndUpdateRuleTypes();
             this.updateConvertButtonState();
         };
         reader.readAsText(file);
@@ -47,12 +48,111 @@ class AppLockerConverter {
 
     handleInputChange() {
         this.xmlContent = document.getElementById('xmlInput').value;
+        this.detectAndUpdateRuleTypes();
         this.updateConvertButtonState();
     }
 
     updateConvertButtonState() {
         const convertBtn = document.getElementById('convertBtn');
         convertBtn.disabled = !this.xmlContent.trim();
+    }
+
+    detectAndUpdateRuleTypes() {
+        if (!this.xmlContent.trim()) {
+            // Reset all checkboxes to enabled and unchecked if no content
+            this.resetRuleTypeCheckboxes();
+            return;
+        }
+
+        try {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(this.xmlContent, 'text/xml');
+
+            // Check for parsing errors
+            const parserError = xmlDoc.querySelector('parsererror');
+            if (parserError) {
+                // Invalid XML, reset checkboxes
+                this.resetRuleTypeCheckboxes();
+                return;
+            }
+
+            // Extract available rule types
+            const availableTypes = this.detectAvailableRuleTypes(xmlDoc);
+            this.updateRuleTypeCheckboxes(availableTypes);
+        } catch (error) {
+            // On error, reset checkboxes
+            this.resetRuleTypeCheckboxes();
+        }
+    }
+
+    detectAvailableRuleTypes(xmlDoc) {
+        const availableTypes = new Set();
+        const ruleCollections = xmlDoc.querySelectorAll('RuleCollection');
+
+        ruleCollections.forEach(collection => {
+            const type = collection.getAttribute('Type');
+            if (!type) return;
+
+            // Check if the collection has actual rules (not just empty)
+            // A collection is considered available if:
+            // 1. It has child elements (rules), OR
+            // 2. It has EnforcementMode="Enabled" (even if empty, it's configured)
+            const hasRules = collection.children.length > 0;
+            const isEnabled = collection.getAttribute('EnforcementMode') === 'Enabled';
+            
+            if (hasRules || isEnabled) {
+                availableTypes.add(type);
+            }
+        });
+
+        return availableTypes;
+    }
+
+    updateRuleTypeCheckboxes(availableTypes) {
+        // Map XML rule types to checkbox IDs
+        const typeToCheckboxId = {
+            'Exe': 'exe',
+            'Msi': 'msi',
+            'Script': 'script',
+            'Dll': 'dll',
+            'Appx': 'storeapps'
+        };
+
+        // Update each checkbox
+        Object.entries(typeToCheckboxId).forEach(([xmlType, checkboxId]) => {
+            const checkbox = document.getElementById(checkboxId);
+            const label = checkbox.closest('label');
+            
+            if (availableTypes.has(xmlType)) {
+                // Type is available: enable checkbox and auto-select it
+                checkbox.disabled = false;
+                checkbox.checked = true;
+                label.classList.remove('disabled');
+            } else {
+                // Type is not available: disable checkbox and uncheck it
+                checkbox.disabled = true;
+                checkbox.checked = false;
+                label.classList.add('disabled');
+            }
+        });
+    }
+
+    resetRuleTypeCheckboxes() {
+        const typeToCheckboxId = {
+            'Exe': 'exe',
+            'Msi': 'msi',
+            'Script': 'script',
+            'Dll': 'dll',
+            'Appx': 'storeapps'
+        };
+
+        // Reset all checkboxes to enabled, but keep current checked state
+        Object.values(typeToCheckboxId).forEach(checkboxId => {
+            const checkbox = document.getElementById(checkboxId);
+            const label = checkbox.closest('label');
+            checkbox.disabled = false;
+            label.classList.remove('disabled');
+        });
     }
 
     convert() {
@@ -243,6 +343,7 @@ ${itemsXML}</Replace>`;
         document.getElementById('outputSection').style.display = 'none';
         document.getElementById('downloadBtn').disabled = true;
         this.hideError();
+        this.resetRuleTypeCheckboxes();
         this.updateConvertButtonState();
     }
 
