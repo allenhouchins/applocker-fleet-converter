@@ -43,6 +43,15 @@
                 <h3>Step 5: Convert Using This Tool</h3>
                 <p>Upload or paste your exported XML file below. The tool will automatically detect which rule types are available in your policy and enable/disable the appropriate options.</p>
                 
+                <h3>Step 6: Verify Policy Deployment</h3>
+                <p>After deploying via Fleet, verify the policy is applied:</p>
+                <ul>
+                    <li><strong>In Fleet MDM:</strong> Check policy status and device compliance in the Fleet console</li>
+                    <li><strong>Test (Most Reliable):</strong> Try running a blocked application - if you see the "This app has been blocked" dialog, the policy is working correctly</li>
+                    <li><strong>Event Viewer:</strong> Check Applications and Services Logs → Microsoft → Windows → AppLocker for deployment events (Event ID 8003) and block events (Event ID 8004)</li>
+                    <li><strong>Note:</strong> Policies deployed via MDM may not always be visible in Local Security Policy GUI, but they are still active and working if apps are being blocked</li>
+                </ul>
+                
                 <h3>What Users Will See</h3>
                 <p>When an AppLocker policy blocks an application, end users will see a Windows dialog box indicating that the app has been blocked by their system administrator:</p>
                 <div class="screenshot-container">

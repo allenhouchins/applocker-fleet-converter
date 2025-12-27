@@ -65,6 +65,56 @@ This tool helps Windows administrators (and Mac admins managing Windows devices)
    - Assign the policy to your target devices or groups
    - The policy will be applied via the AppLocker CSP
 
+### Step 4: Verify Policy Deployment
+
+After deploying the policy, you can verify it's been applied in several ways:
+
+#### In Fleet MDM Console
+
+1. **Check Policy Status**:
+   - Navigate to the device or policy management section in Fleet
+   - View the policy assignment status for your target devices
+   - Look for successful deployment confirmations
+
+2. **Device Compliance**:
+   - Check device compliance status to ensure policies are being applied
+   - Review any error messages or deployment failures
+
+#### On the Windows Device
+
+1. **View Applied Policies** (Local Security Policy):
+   - **Note**: Policies deployed via MDM/CSP may not always be visible in the Local Security Policy GUI, even though they are active and working
+   - Open **Local Security Policy** (`secpol.msc`)
+   - Navigate to **Application Control Policies → AppLocker`
+   - If visible, you should see your deployed policy listed under each rule type (EXE, MSI, Script, DLL, StoreApps)
+   - **If the policy doesn't appear in the GUI**, this is normal - the policy is still applied and working (see testing method below)
+
+2. **Event Viewer** (AppLocker Logs):
+   - Open **Event Viewer** (`eventvwr.msc`)
+   - Navigate to **Applications and Services Logs → Microsoft → Windows → AppLocker**
+   - Check for policy deployment events (Event ID 8003 indicates policy was applied)
+   - Review any blocked application attempts (Event ID 8004 for blocks, 8005 for audits)
+
+3. **PowerShell Verification**:
+   ```powershell
+   # Check if AppLocker service is running
+   Get-Service -Name AppIDSvc
+   
+   # View current AppLocker policies
+   Get-AppLockerPolicy -Effective
+   
+   # View AppLocker policy from specific grouping
+   Get-AppLockerPolicy -Local | Select-Object -ExpandProperty RuleCollections
+   ```
+
+4. **Test the Policy** (Most Reliable Method):
+   - Try running an application that should be blocked by your policy
+   - If the policy is working, you should see the "This app has been blocked" dialog
+   - **This is the most reliable way to verify the policy is active** - if apps are being blocked as expected, the policy is working correctly
+   - Check Event Viewer for the corresponding block event (Event ID 8004 for blocks)
+
+**Note**: Policy deployment may take a few minutes. If the policy doesn't appear immediately, wait a few minutes and refresh, or check Fleet logs for deployment status.
+
 ### End User Experience
 
 When an AppLocker policy is active and blocks an application, end users will see a Windows dialog box indicating that the app has been blocked:
