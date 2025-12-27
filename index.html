@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AppLocker to Fleet MDM</title>
+    <title>AppLocker to Fleet Converter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔒 AppLocker to Fleet MDM</h1>
+            <h1>🔒 AppLocker to Fleet Converter</h1>
             <p class="subtitle">Convert your AppLocker XML policies to Fleet-compatible MDM format</p>
         </header>
 
@@ -46,7 +46,7 @@
                 <h3>Step 6: Verify Policy Deployment</h3>
                 <p>After deploying via Fleet, verify the policy is applied:</p>
                 <ul>
-                    <li><strong>In Fleet MDM:</strong> Check policy status and device compliance in the Fleet console</li>
+                    <li><strong>In Fleet:</strong> Check policy status and device compliance in the Fleet console</li>
                     <li><strong>Test (Most Reliable):</strong> Try running a blocked application - if you see the "This app has been blocked" dialog, the policy is working correctly</li>
                     <li><strong>Event Viewer:</strong> Check Applications and Services Logs → Microsoft → Windows → AppLocker for deployment events (Event ID 8003) and block events (Event ID 8004)</li>
                     <li><strong>Note:</strong> Policies deployed via MDM may not always be visible in Local Security Policy GUI, but they are still active and working if apps are being blocked</li>
@@ -94,6 +94,11 @@
                     <input type="text" id="grouping" value="FleetAppLocker" placeholder="FleetAppLocker">
                     <span class="help-text-small">Unique identifier for this policy. Microsoft recommends using a GUID to avoid conflicts. Generate one in PowerShell: <code>[guid]::NewGuid()</code></span>
                 </div>
+                <div class="important-note" style="margin-top: 20px;">
+                    <strong>⚠️ Critical - Atomic Policy Deployment:</strong> MDM-deployed AppLocker policies are <strong>atomic</strong> - each deployment completely replaces any previous policy with the same Grouping ID. <strong>You have two options:</strong><br><br>
+                    <strong>Option 1 (Recommended):</strong> Include <strong>ALL your rules (new and old) in a single policy deployment</strong>. When adding new rules, export the complete updated policy and redeploy.<br><br>
+                    <strong>Option 2:</strong> Use a <strong>new Grouping ID</strong> for each new policy to create separate policy instances that coexist. Example: Deploy Policy A (blocks App1) with Grouping ID "FleetAppLocker" → Deploy Policy B (blocks App2) with NEW Grouping ID "FleetAppLocker2" → Both policies are active.
+                </div>
             </div>
 
             <div class="action-section">
@@ -116,7 +121,7 @@
         </div>
 
         <footer>
-            <p>Made for Windows admins deploying AppLocker policies via Fleet MDM</p>
+            <p>Made for Windows admins deploying AppLocker policies via Fleet</p>
             <p class="docs-link">
                 <a href="https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp" target="_blank">
                     📚 Microsoft AppLocker CSP Documentation
