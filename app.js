@@ -1,4 +1,4 @@
-// AppLocker to Fleet configuration profile converter
+// AppLocker to Fleet MDM
 // Converts AppLocker XML exports to Fleet-compatible SyncML format
 
 class AppLockerConverter {

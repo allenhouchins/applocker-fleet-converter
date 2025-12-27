@@ -1,4 +1,4 @@
-# AppLocker to Fleet configuration profile converter
+# AppLocker to Fleet MDM
 
 A web-based tool that converts AppLocker XML policy exports into Fleet-compatible MDM (Mobile Device Management) format for easy deployment.
 
