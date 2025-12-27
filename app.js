@@ -17,6 +17,7 @@ class AppLockerConverter {
         const downloadBtn = document.getElementById('downloadBtn');
         const copyBtn = document.getElementById('copyBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const generateGuidBtn = document.getElementById('generateGuidBtn');
 
         fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
         pasteBtn.addEventListener('click', () => this.showPasteDialog());
@@ -25,6 +26,7 @@ class AppLockerConverter {
         downloadBtn.addEventListener('click', () => this.downloadFile());
         copyBtn.addEventListener('click', () => this.copyToClipboard());
         clearBtn.addEventListener('click', () => this.clearAll());
+        generateGuidBtn.addEventListener('click', () => this.generateGuid());
     }
 
     handleFileUpload(event) {
@@ -390,6 +392,32 @@ ${itemsXML}</Replace>`;
 
     hideError() {
         document.getElementById('errorSection').style.display = 'none';
+    }
+
+    generateGuid() {
+        // Generate a GUID in the format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        
+        const guid = generateUUID();
+        const groupingInput = document.getElementById('grouping');
+        groupingInput.value = guid;
+        
+        // Visual feedback
+        const generateBtn = document.getElementById('generateGuidBtn');
+        const originalText = generateBtn.textContent;
+        generateBtn.textContent = '✅ Generated!';
+        generateBtn.style.background = '#059669';
+        
+        setTimeout(() => {
+            generateBtn.textContent = originalText;
+            generateBtn.style.background = '';
+        }, 2000);
     }
 }
 

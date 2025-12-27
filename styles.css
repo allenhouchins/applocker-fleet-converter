@@ -267,9 +267,15 @@ h2 {
     color: #555;
 }
 
+.grouping-input-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    max-width: 500px;
+}
+
 .grouping-section input[type="text"] {
-    width: 100%;
-    max-width: 400px;
+    flex: 1;
     padding: 10px 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
@@ -282,6 +288,24 @@ h2 {
     outline: none;
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.generate-guid-button {
+    padding: 10px 16px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.generate-guid-button:hover {
+    background: #4b5563;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .help-text-small {

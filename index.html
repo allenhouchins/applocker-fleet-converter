@@ -91,8 +91,11 @@
                 </div>
                 <div class="grouping-section">
                     <label for="grouping">Grouping ID:</label>
-                    <input type="text" id="grouping" value="FleetAppLocker" placeholder="FleetAppLocker">
-                    <span class="help-text-small">Unique identifier for this policy. Microsoft recommends using a GUID to avoid conflicts. Generate one in PowerShell: <code>[guid]::NewGuid()</code></span>
+                    <div class="grouping-input-wrapper">
+                        <input type="text" id="grouping" value="FleetAppLocker" placeholder="FleetAppLocker">
+                        <button type="button" id="generateGuidBtn" class="generate-guid-button" title="Generate a new GUID">🎲 Generate GUID</button>
+                    </div>
+                    <span class="help-text-small">Unique identifier for this policy. Microsoft recommends using a GUID to avoid conflicts. Click the button above to generate one, or use PowerShell: <code>[guid]::NewGuid()</code></span>
                 </div>
                 <div class="important-note" style="margin-top: 20px;">
                     <strong>⚠️ Critical - Atomic Policy Deployment:</strong> MDM-deployed AppLocker policies are <strong>atomic</strong> - each deployment completely replaces any previous policy with the same Grouping ID. <strong>You have two options:</strong><br><br>
